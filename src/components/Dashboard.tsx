@@ -1,9 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { Plus, Target, TrendingUp } from "lucide-react";
+import { Plus, Target, TrendingUp, LogOut, Settings } from "lucide-react";
 import { MacroChart } from "./MacroChart";
 import { FoodLogger } from "./FoodLogger";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserData } from "@/hooks/useUserData";
 import { useState } from "react";
 
 interface NutritionData {
@@ -13,37 +15,38 @@ interface NutritionData {
   fat: number;
 }
 
-interface DailyGoals {
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-}
-
 export function Dashboard() {
-  const [consumed, setConsumed] = useState<NutritionData>({
-    calories: 1245,
-    protein: 85,
-    carbs: 120,
-    fat: 45
-  });
+  const { signOut, user } = useAuth();
+  const { dailyGoals, consumed, addFoodLog, loading } = useUserData();
+  const [showFoodLogger, setShowFoodLogger] = useState(false);
 
-  const goals: DailyGoals = {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-accent to-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading your data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const goals = dailyGoals || {
     calories: 2000,
     protein: 150,
     carbs: 200,
     fat: 65
   };
 
-  const [showFoodLogger, setShowFoodLogger] = useState(false);
-
-  const addFood = (nutrition: NutritionData) => {
-    setConsumed(prev => ({
-      calories: prev.calories + nutrition.calories,
-      protein: prev.protein + nutrition.protein,
-      carbs: prev.carbs + nutrition.carbs,
-      fat: prev.fat + nutrition.fat
-    }));
+  const addFood = async (nutrition: NutritionData & { food_name: string; serving_size?: string }) => {
+    await addFoodLog({
+      food_name: nutrition.food_name,
+      calories: nutrition.calories,
+      protein: nutrition.protein,
+      carbs: nutrition.carbs,
+      fat: nutrition.fat,
+      serving_size: nutrition.serving_size
+    });
     setShowFoodLogger(false);
   };
 
@@ -67,11 +70,21 @@ export function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-accent to-background p-4 md:p-6">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            CalorieTracker
-          </h1>
-          <p className="text-muted-foreground">Track your nutrition, reach your goals</p>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              CalorieTracker
+            </h1>
+            <p className="text-muted-foreground">Welcome back, {user?.user_metadata?.full_name || user?.email}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="icon">
+              <Settings className="w-4 h-4" />
+            </Button>
+            <Button variant="outline" size="icon" onClick={signOut}>
+              <LogOut className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Main Stats */}

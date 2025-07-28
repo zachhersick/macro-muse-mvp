@@ -9,6 +9,8 @@ interface NutritionData {
   protein: number;
   carbs: number;
   fat: number;
+  food_name: string;
+  serving_size?: string;
 }
 
 interface FoodLoggerProps {
@@ -39,10 +41,12 @@ export function FoodLogger({ onAddFood, onCancel }: FoodLoggerProps) {
 
   const handleAddFood = (food: typeof sampleFoods[0]) => {
     onAddFood({
+      food_name: food.name,
       calories: food.calories,
       protein: food.protein,
       carbs: food.carbs,
-      fat: food.fat
+      fat: food.fat,
+      serving_size: food.serving
     });
   };
 
