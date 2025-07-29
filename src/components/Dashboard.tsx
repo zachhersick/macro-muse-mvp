@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Plus, Target, TrendingUp, LogOut, Settings } from "lucide-react";
 import { MacroChart } from "./MacroChart";
 import { FoodLogger } from "./FoodLogger";
+import { WeightTracker } from "./WeightTracker";
+import { WeightChart } from "./WeightChart";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserData } from "@/hooks/useUserData";
 import { useState } from "react";
@@ -19,6 +21,7 @@ export function Dashboard() {
   const { signOut, user } = useAuth();
   const { dailyGoals, consumed, addFoodLog, loading } = useUserData();
   const [showFoodLogger, setShowFoodLogger] = useState(false);
+  const [weightRefreshTrigger, setWeightRefreshTrigger] = useState(0);
 
   if (loading) {
     return (
@@ -146,7 +149,7 @@ export function Dashboard() {
           </Card>
         </div>
 
-        {/* Charts and Remaining */}
+        {/* Charts and Weight Tracking */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card className="shadow-card border-0">
             <CardHeader>
@@ -185,6 +188,12 @@ export function Dashboard() {
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Weight Tracking */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <WeightTracker onWeightAdded={() => setWeightRefreshTrigger(prev => prev + 1)} />
+          <WeightChart refreshTrigger={weightRefreshTrigger} />
         </div>
 
         {/* Add Food Button */}
