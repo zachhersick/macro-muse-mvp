@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      body_composition_logs: {
+        Row: {
+          body_fat_percentage: number | null
+          bone_mass_kg: number | null
+          created_at: string
+          id: string
+          logged_at: string
+          muscle_mass_kg: number | null
+          notes: string | null
+          user_id: string
+          visceral_fat_rating: number | null
+          water_percentage: number | null
+        }
+        Insert: {
+          body_fat_percentage?: number | null
+          bone_mass_kg?: number | null
+          created_at?: string
+          id?: string
+          logged_at?: string
+          muscle_mass_kg?: number | null
+          notes?: string | null
+          user_id: string
+          visceral_fat_rating?: number | null
+          water_percentage?: number | null
+        }
+        Update: {
+          body_fat_percentage?: number | null
+          bone_mass_kg?: number | null
+          created_at?: string
+          id?: string
+          logged_at?: string
+          muscle_mass_kg?: number | null
+          notes?: string | null
+          user_id?: string
+          visceral_fat_rating?: number | null
+          water_percentage?: number | null
+        }
+        Relationships: []
+      }
+      body_measurements: {
+        Row: {
+          created_at: string
+          id: string
+          logged_at: string
+          measurement_type: string
+          notes: string | null
+          user_id: string
+          value_cm: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          logged_at?: string
+          measurement_type: string
+          notes?: string | null
+          user_id: string
+          value_cm: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          logged_at?: string
+          measurement_type?: string
+          notes?: string | null
+          user_id?: string
+          value_cm?: number
+        }
+        Relationships: []
+      }
       caltracker: {
         Row: {
           created_at: string

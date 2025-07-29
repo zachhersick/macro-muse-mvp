@@ -6,6 +6,8 @@ import { MacroChart } from "./MacroChart";
 import { FoodLogger } from "./FoodLogger";
 import { WeightTracker } from "./WeightTracker";
 import { WeightChart } from "./WeightChart";
+import { BodyCompositionTracker } from "./BodyCompositionTracker";
+import { BodyCompositionCharts } from "./BodyCompositionCharts";
 import { useAuth } from "@/hooks/useAuth";
 import { useUserData } from "@/hooks/useUserData";
 import { useState } from "react";
@@ -22,6 +24,7 @@ export function Dashboard() {
   const { dailyGoals, consumed, addFoodLog, loading } = useUserData();
   const [showFoodLogger, setShowFoodLogger] = useState(false);
   const [weightRefreshTrigger, setWeightRefreshTrigger] = useState(0);
+  const [bodyCompositionRefreshTrigger, setBodyCompositionRefreshTrigger] = useState(0);
 
   if (loading) {
     return (
@@ -194,6 +197,12 @@ export function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <WeightTracker onWeightAdded={() => setWeightRefreshTrigger(prev => prev + 1)} />
           <WeightChart refreshTrigger={weightRefreshTrigger} />
+        </div>
+
+        {/* Body Composition Tracking */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <BodyCompositionTracker onDataAdded={() => setBodyCompositionRefreshTrigger(prev => prev + 1)} />
+          <BodyCompositionCharts refreshTrigger={bodyCompositionRefreshTrigger} />
         </div>
 
         {/* Add Food Button */}
